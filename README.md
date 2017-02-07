@@ -1,5 +1,13 @@
 ## TODO
 
+### Parsing
+- ☐ Parse error/warn messages from Intero/GHC/GHCi
+
+### Interface
+- ☐ Accept JSON input for commands and JSON output for results
+- ☐ Use stdin stdout for communication
+- ☐ Support communication over socket
+
 ### Validate environment
 - ☐ Error message if Stack is not installed
 - ☐ Error message if current project/file is not managed by Stack (ie. there is no stack.yaml)

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module InteroManager where
+module InteroManager (run) where
 
 import Prelude hiding (getLine, putStr, putStrLn)
 import System.Process
@@ -20,6 +20,8 @@ import Data.Text (Text, pack)
 import Data.Monoid ((<>))
 import Data.IORef
 
+import GhcOutputParser
+
 defaultInteroProcess :: Handle -> CreateProcess
 defaultInteroProcess h = CreateProcess {
     cmdspec = ShellCommand "stack exec -- intero",
@@ -38,8 +40,8 @@ defaultInteroProcess h = CreateProcess {
     child_user = Nothing
 }
 
-main :: IO ()
-main = do
+run :: IO ()
+run = do
   f <- openFile "./intero-manager.log" WriteMode
   hSetBuffering f NoBuffering
   hSetEncoding f utf8
@@ -70,7 +72,8 @@ echo fromHandle toHandle buf = do
   when (l == prompt) $ do
     -- read contents from the buffer and clear it
     bufContents <- atomicModifyIORef' buf (\cont -> ("", cont))
-    putStr bufContents
+    let parsed = parseErrWarn bufContents
+    print parsed
   hPutStrLn toHandle l
   return ()
 
