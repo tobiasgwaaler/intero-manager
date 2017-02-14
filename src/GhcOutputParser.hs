@@ -34,9 +34,10 @@ compileMessage = do
   colnum <- many1 digit
   string ":"
   skipMany whitespace
+  level <- string "err" <|> string "warn"
   skipRestOfLine
   msg <- many indentedLine
-  return [(filepath, linenum, colnum, msg)]
+  return [(filepath, linenum, colnum, level, msg)]
 
 indentedLine = do
   indentation <- many1 whitespace <?> "indentation"
