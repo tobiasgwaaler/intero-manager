@@ -1,0 +1,12 @@
+garbage 1
+garbage 1
+
+src/Lib.hs:17:1: warning: [-Wunused-imports]
+    The import of ‘Data.Char’ is redundant
+      except perhaps to import instances from ‘Data.Char’
+    To import instances alone, use: import Data.Char()
+
+src/Lib.hs:17:1: warning: [-Wunused-imports]
+    The import of ‘Data.Char’ is redundant
+
+garbage

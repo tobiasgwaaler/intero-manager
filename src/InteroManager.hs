@@ -72,8 +72,9 @@ echo fromHandle toHandle buf = do
   when (l == prompt) $ do
     -- read contents from the buffer and clear it
     bufContents <- atomicModifyIORef' buf (\cont -> ("", cont))
-    let parsed = parseErrWarn bufContents
-    print parsed
+    -- let parsed = parseErrWarn bufContents
+    -- print parsed
+    return ()
   hPutStrLn toHandle l
   return ()
 
