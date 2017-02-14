@@ -9,4 +9,15 @@ src/Lib.hs:17:1: warning: [-Wunused-imports]
 src/Lib.hs:17:1: warning: [-Wunused-imports]
     The import of ‘Data.Char’ is redundant
 
-garbage
+[1 of 1] Compiling ParseError       ( src/ParseError.hs, interpreted )
+
+src/ParseError.hs:3:18: error:
+    parse error (possibly incorrect indentation or mismatched brackets)
+Failed, modules loaded: none.
+
+src/TypeError.hs:6:7-12: error:
+    • Couldn't match expected type ‘[Char]’ with actual type ‘Int’
+    • In the first argument of ‘(++)’, namely ‘number’
+      In the expression: number ++ "string"
+      In an equation for ‘foo’: foo = number ++ "string"
+Failed, modules loaded: none.

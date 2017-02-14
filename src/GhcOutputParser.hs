@@ -7,14 +7,13 @@ module GhcOutputParser (
 import Text.Parsec
 import Text.Parsec.Char
 
+import Data.Maybe (fromMaybe)
 import Control.Monad (void)
 
 testParse = do
       input <- readFile "./test/testfile.txt"
-      parseTest p input
+      parseTest messages input
       -- return (runParser p () "testfile" input)
-
-p = messages
 
 messages =
   (eof >> return [])
@@ -29,15 +28,20 @@ messages =
 compileMessage = do
   filepath <- many1 (noneOf "\n:") <?> "filepath"
   string ":"
-  linenum <- many1 digit
-  string ":"
-  colnum <- many1 digit
-  string ":"
+  line <- location
+  col <- location
   skipMany whitespace
   level <- string "err" <|> string "warn"
   skipRestOfLine
   msg <- many indentedLine
-  return [(filepath, linenum, colnum, level, msg)]
+  return [(filepath, line, col, level, msg)]
+
+location = do
+  from <- many1 digit
+  optional $ string "-"
+  to <- optionMaybe (many1 digit)
+  string ":"
+  return (from, fromMaybe from to)
 
 indentedLine = do
   indentation <- many1 whitespace <?> "indentation"
