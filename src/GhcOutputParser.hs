@@ -1,19 +1,42 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, NamedFieldPuns, DeriveGeneric #-}
 
 module GhcOutputParser (
-  testParse
+  parseCompileErrors
   ) where
 
 import Text.Parsec
 import Text.Parsec.Char
 
+import Data.Text (Text)
+
 import Data.Maybe (fromMaybe)
 import Control.Monad (void)
 
-testParse = do
-      input <- readFile "./test/testfile.txt"
-      parseTest messages input
-      -- return (runParser p () "testfile" input)
+import GHC.Generics (Generic)
+
+import Data.Aeson (ToJSON)
+
+-- testParse = do
+--       input <- readFile "./test/testfile.txt"
+--       parseTest messages input
+
+parseCompileErrors :: Text -> Either ParseError [CompileError]
+parseCompileErrors = runParser messages () ""
+
+data CompileErrors = CompileErrors {
+    compileErrors :: [CompileError]
+  } deriving (Generic, Show)
+
+data CompileError = CompileError {
+  filepath :: String,
+  line :: (String, String),
+  col :: (String, String),
+  level :: String,
+  msg :: [String]
+} deriving (Generic, Show)
+
+instance ToJSON CompileError
+instance ToJSON CompileErrors
 
 messages =
   (eof >> return [])
@@ -34,7 +57,7 @@ compileMessage = do
   level <- string "err" <|> string "warn"
   skipRestOfLine
   msg <- many indentedLine
-  return [(filepath, line, col, level, msg)]
+  return [CompileError {filepath, line , col, level, msg}]
 
 location = do
   from <- many1 digit

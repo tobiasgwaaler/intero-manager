@@ -2,5 +2,5 @@ import GhcOutputParser
 
 main = do
   putStrLn ""
-  testParse
+  -- testParse
   putStrLn ""

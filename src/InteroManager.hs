@@ -20,11 +20,13 @@ import Data.Text (Text, pack)
 import Data.Monoid ((<>))
 import Data.IORef
 
+import Data.Aeson (encode)
+
 import GhcOutputParser
 
 defaultInteroProcess :: Handle -> CreateProcess
 defaultInteroProcess h = CreateProcess {
-    cmdspec = ShellCommand "stack exec -- intero",
+    cmdspec = ShellCommand "stack repl --with-ghc intero --ghc-options='-ferror-spans' --ghc-options='-ignore-dot-ghci'",
     cwd = Nothing,
     env = Nothing,
     std_in = CreatePipe,
@@ -72,8 +74,9 @@ echo fromHandle toHandle buf = do
   when (l == prompt) $ do
     -- read contents from the buffer and clear it
     bufContents <- atomicModifyIORef' buf (\cont -> ("", cont))
-    -- let parsed = parseErrWarn bufContents
-    -- print parsed
+    case parseCompileErrors bufContents of
+      Left err -> print err
+      Right messages -> print (encode messages)
     return ()
   hPutStrLn toHandle l
   return ()
